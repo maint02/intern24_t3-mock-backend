@@ -2,6 +2,7 @@ package com.itsol.train.mock.service.impl;
 
 import com.google.gson.Gson;
 import com.itsol.train.mock.constants.UpdateIssueConstants;
+import com.itsol.train.mock.dao.impl.IssueDAO;
 import com.itsol.train.mock.dto.*;
 import com.itsol.train.mock.entity.*;
 import com.itsol.train.mock.repo.IssueHistoryRepository;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +37,8 @@ public class IssueServiceImpl implements IssueService {
     EntityManagerFactory entityManagerFactory;
     @Autowired
     IssueHistoryRepository issueHistoryRepository;
+    @Autowired
+    IssueDAO issueDAO;
 
     @Override
     public IssueDTO save(IssueDTO issueDTO) {
@@ -151,6 +153,11 @@ public class IssueServiceImpl implements IssueService {
         }finally {
             entityManager.close();
         }
+    }
+
+    @Override
+    public PagingDataDTO getByParams(PagingDataDTO pagingDataDTO, IssueSearchDTO issueSearchDTO) {
+        return issueDAO.getByParams(pagingDataDTO,issueSearchDTO);
     }
 
 

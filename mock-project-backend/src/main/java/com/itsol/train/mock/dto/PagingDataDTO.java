@@ -14,4 +14,5 @@ public class PagingDataDTO {
     private int page;
     private int totalPage;
     private List<?> listData=new ArrayList<>();
+    private int limit;
 }

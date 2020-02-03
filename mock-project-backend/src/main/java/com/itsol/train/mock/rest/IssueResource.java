@@ -113,5 +113,24 @@ public class IssueResource {
         boolean kqAdd=employeeIssueService.save(employeeIssueDTO);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+    @GetMapping("/issue/search")
+    public ResponseEntity<ResponseDto> searchIssue(@RequestBody IssueSearchDTO issueSearchDTO,
+                                                   @RequestParam("page") int page,
+                                                   @RequestParam("limit") int limit){
+        ResponseDto dto=new ResponseDto();
+        PagingDataDTO pagingDataDTOInput=new PagingDataDTO();
+        pagingDataDTOInput.setPage(page);
+        pagingDataDTOInput.setLimit(limit);
 
+        PagingDataDTO pagingDataDTOOutput=issueService.getByParams(pagingDataDTOInput,issueSearchDTO);
+        if (pagingDataDTOOutput!=null){
+            dto.setMessage("có dữ liệu");
+            dto.setDataResponse(pagingDataDTOOutput);
+            dto.setResponseCode(AppConstants.RESPONSE_OK);
+        }else {
+            dto.setMessage("không lây được dữ liệu");
+            dto.setDataResponse(AppConstants.RESPONSE_ERRORS);
+        }
+        return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
 }

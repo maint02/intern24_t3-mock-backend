@@ -9,4 +9,5 @@ public interface IssueService  {
     boolean deleteByIds(Long[] ids);
     PagingDataDTO getByProjectIdPaging(Long id, Pageable pageable);
     String update(UpdateIssueDTO updateIssueDTO);
+    PagingDataDTO getByParams(PagingDataDTO pagingDataDTO, IssueSearchDTO issueSearchDTO);
 }

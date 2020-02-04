@@ -113,24 +113,31 @@ public class IssueResource {
         boolean kqAdd=employeeIssueService.save(employeeIssueDTO);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
-    @GetMapping("/issue/search")
-    public ResponseEntity<ResponseDto> searchIssue(@RequestBody IssueSearchDTO issueSearchDTO,
-                                                   @RequestParam("page") int page,
-                                                   @RequestParam("limit") int limit){
-        ResponseDto dto=new ResponseDto();
+    @GetMapping("/issue/get-by-project/{id}/search")
+    public ResponseEntity<ResponseDto> searchIssue(@PathVariable (name = "id") Long id,
+                                                   @RequestParam (value = "name", required = false,defaultValue ="") String name,
+                                                   @RequestParam( value = "page", required = false,defaultValue ="1" ) int page,
+                                                   @RequestParam(value = "limit", required = false,defaultValue ="5") int limit,
+                                                   @RequestParam(value = "priority", required = false,defaultValue ="") String priority){
+        IssueSearchDTO issueSearchDTO=new IssueSearchDTO();
+        issueSearchDTO.setName(name);
+        issueSearchDTO.setProjectId(id);
+        issueSearchDTO.setPriority(priority);
+        //--------------------------
+        ResponseDto responseDto=new ResponseDto();
         PagingDataDTO pagingDataDTOInput=new PagingDataDTO();
-        pagingDataDTOInput.setPage(page);
+        pagingDataDTOInput.setPage(page-1);
         pagingDataDTOInput.setLimit(limit);
-
+        //----------------------------
         PagingDataDTO pagingDataDTOOutput=issueService.getByParams(pagingDataDTOInput,issueSearchDTO);
-        if (pagingDataDTOOutput!=null){
-            dto.setMessage("có dữ liệu");
-            dto.setDataResponse(pagingDataDTOOutput);
-            dto.setResponseCode(AppConstants.RESPONSE_OK);
+        if (pagingDataDTOOutput.getListData().size()!=0){
+            responseDto.setMessage("có dữ liệu");
+            responseDto.setDataResponse(pagingDataDTOOutput);
+            responseDto.setResponseCode(AppConstants.RESPONSE_OK);
         }else {
-            dto.setMessage("không lây được dữ liệu");
-            dto.setDataResponse(AppConstants.RESPONSE_ERRORS);
+            responseDto.setMessage("không có dữ liệu");
+            responseDto.setResponseCode(AppConstants.RESPONSE_ERRORS);
         }
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 }

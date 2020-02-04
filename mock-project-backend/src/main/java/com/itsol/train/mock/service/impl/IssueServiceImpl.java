@@ -2,7 +2,7 @@ package com.itsol.train.mock.service.impl;
 
 import com.google.gson.Gson;
 import com.itsol.train.mock.constants.UpdateIssueConstants;
-import com.itsol.train.mock.dao.impl.IssueDAO;
+import com.itsol.train.mock.dao.IssueDAO;
 import com.itsol.train.mock.dto.*;
 import com.itsol.train.mock.entity.*;
 import com.itsol.train.mock.repo.IssueHistoryRepository;

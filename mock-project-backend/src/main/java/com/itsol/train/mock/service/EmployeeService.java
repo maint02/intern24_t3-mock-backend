@@ -26,11 +26,15 @@ public interface EmployeeService {
 
     EmployeeEntity getEmployeeInfo(String username);
 
-    EmployeeEntity getById(long id);
+    EmployeeDto getById(long id);
 
     boolean deleteById (long id);
 
-    boolean updateById (EmployeeDto employeeDto);
+//    boolean updateById (EmployeeDto employeeDto);
 
-    List<EmployeeEntity> getAllEmployee();
+    List<EmployeeDto> getAllEmployee();
+
+    List<EmployeeDto> getListByUsername();
+
+
 }

@@ -7,4 +7,4 @@ join role r on er.employee_id = r.id
 join position p on p.id = e.position_id
 join team t on t.id = e.team_id
 join department d on d.id = e.department_id
-where 1 = 1;
+where 1 = 1

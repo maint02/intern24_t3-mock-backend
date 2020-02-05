@@ -11,11 +11,14 @@ public interface EmployeeRepository {
 
     boolean updateEmployeeEntity(EmployeeEntity employeeEntity);
 
-    EmployeeEntity getEmployeeEntityById(long id);
+    EmployeeDto findEmployeeById(long id);
 
     boolean insertEmployeeEntity(EmployeeEntity employeeEntity);
 
-    boolean deleteEmployeeEntity(long id);
+    boolean deleteEmployeeById(long id);
 
-    List<EmployeeEntity> getAll();
+    List<EmployeeDto> getAll();
+
+    List<EmployeeDto> findListEmployeesByParams();
+
 }

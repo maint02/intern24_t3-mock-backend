@@ -13,15 +13,12 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -135,69 +132,61 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeEntity getById(long id) {
-        EmployeeEntity employeeEntityById = employeeRepository.getEmployeeEntityById(id);
+    public EmployeeDto getById(long id) {
+        EmployeeDto employeeEntityById = employeeRepository.findEmployeeById(id);
         return employeeEntityById;
     }
 
     @Override
     public boolean deleteById(long id) {
-        boolean result = employeeRepository.deleteEmployeeEntity(id);
+        boolean result = employeeRepository.deleteEmployeeById(id);
         return result;
     }
 
+//    @Override
+//    public boolean updateById(EmployeeDto employeeDto) {
+//        Long id = employeeDto.getId();
+//        EmployeeEntity employeeEntityById = employeeRepository.getEmployeeEntityById(id);
+//        if (employeeEntityById != null) {
+//            EmployeeEntity entity = modelMapper.map(employeeDto, EmployeeEntity.class);
+//            entity.setIsActived(employeeDto.getIsActived());
+//            entity.setIsApproved(employeeDto.getIsApproved());
+//            entity.setDepartmentEntity(employeeDto.getDepartmentEntity());
+//            entity.setPositionEntity(employeeDto.getPositionEntity());
+//            entity.setTeamEntity(employeeDto.getTeamEntity());
+//            entity.setAddress(employeeDto.getAddress());
+//            entity.setBirthday(employeeDto.getBirthday());
+//            entity.setCreatedDate(employeeDto.getCreatedDate());
+//            entity.setGraduatedYear(employeeDto.getGraduatedYear());
+//            entity.setRoleEntities(employeeDto.getRoleEntities());
+//            entity.setEmail(employeeDto.getEmail());
+//            entity.setFullName(employeeDto.getFullName());
+//            entity.setImageUrl(employeeDto.getImageUrl());
+//            entity.setIsLeader(employeeDto.getIsLeader());
+//            entity.setIsManager(employeeDto.getIsManager());
+//            entity.setPhoneNumber(employeeDto.getPhoneNumber());
+//            entity.setSkypeAccount(employeeDto.getSkypeAccount());
+//            entity.setUniversity(employeeDto.getUniversity());
+//            entity.setUserType(employeeDto.getUserType());
+//            employeeRepositoryJpa.save(entity);
+//            return true;
+//        } else {
+//            throw new UsernameNotFoundException("Employee has id" + id + "not found");
+//        }
+//    }
+
     @Override
-    public boolean updateById(EmployeeDto employeeDto) {
-        Long id = employeeDto.getId();
-        EmployeeEntity employeeEntityById = employeeRepository.getEmployeeEntityById(id);
-        if (employeeEntityById != null) {
-            EmployeeEntity entity = modelMapper.map(employeeDto, EmployeeEntity.class);
-            entity.setIsActived(employeeDto.getIsActived());
-            entity.setIsApproved(employeeDto.getIsApproved());
-            entity.setDepartmentEntity(employeeDto.getDepartmentEntity());
-            entity.setPositionEntity(employeeDto.getPositionEntity());
-            entity.setTeamEntity(employeeDto.getTeamEntity());
-            entity.setAddress(employeeDto.getAddress());
-            entity.setBirthday(employeeDto.getBirthday());
-            entity.setCreatedDate(employeeDto.getCreatedDate());
-            entity.setGraduatedYear(employeeDto.getGraduatedYear());
-            entity.setRoleEntities(employeeDto.getRoleEntities());
-            entity.setEmail(employeeDto.getEmail());
-            entity.setFullName(employeeDto.getFullName());
-            entity.setImageUrl(employeeDto.getImageUrl());
-            entity.setIsLeader(employeeDto.getIsLeader());
-            entity.setIsManager(employeeDto.getIsManager());
-            entity.setPhoneNumber(employeeDto.getPhoneNumber());
-            entity.setSkypeAccount(employeeDto.getSkypeAccount());
-            entity.setUniversity(employeeDto.getUniversity());
-            entity.setUserType(employeeDto.getUserType());
-            employeeRepositoryJpa.save(entity);
-            return true;
-        } else {
-            throw new UsernameNotFoundException("Employee has id" + id + "not found");
-        }
+    public List<EmployeeDto> getAllEmployee() {
+        List<EmployeeDto> allDtos = employeeRepository.getAll();
+        return allDtos;
     }
 
     @Override
-    public List<EmployeeEntity> getAllEmployee() {
-
-//        List<EmployeeEntity> data = employeeRepositoryJpa.findAll();
-//        List<EmployeeDto> dto = new ArrayList<>();
-//        try {
-//            data.stream().map(res -> {
-//                EmployeeDto em = modelMapper.map(res, EmployeeDto.class);
-//                dto.add(em);
-//                data.setValue(dto);
-//                return result;
-//            }).collect(Collectors.toList());
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage(), ex);
-//            result.setValue(null);
-//        }
-//
-//        log.info("---response result ---- " + result.getMessage());
-        return null;
+    public List<EmployeeDto> getListByUsername() {
+        List<EmployeeDto> dtos = employeeRepository.findListEmployeesByParams();
+        return dtos;
     }
 }
+
 
 

@@ -36,8 +36,8 @@ public class EmployeeDto {
     String userType;
     String address;
     String university;
-    Boolean isLeader;
     Integer graduatedYear;
+    Boolean isLeader;
     Boolean isManager;
     Boolean isActived;
     Date birthday;
@@ -45,23 +45,36 @@ public class EmployeeDto {
     String email;
     Boolean isApproved;
 
+    Long roleId;
+    String roleName;
+
+    Long departmentId;
+    String departmentName;
+
+    Long positionId;
+    String positionName;
+
+    Long teamId;
+    String teamName;
+
     Boolean rememberMe;
     List<String> authorities;
-    Set<RoleEntity> roleEntities;
-    DepartmentEntity departmentEntity;
-    PositionEntity positionEntity;
-    TeamEntity teamEntity;
 
-    public EmployeeDto(EmployeeEntity employeeEntity) {
-        if (employeeEntity != null) {
-            this.id = employeeEntity.getId();
-            this.username = employeeEntity.getUsername();
-            this.email = employeeEntity.getEmail();
-            this.roleEntities = employeeEntity.getRoleEntities();
-            this.authorities = employeeEntity.getRoleEntities().stream()
-                    .map(auth -> ((RoleEntity) auth).getName()).collect(Collectors.toList());
-            this.departmentEntity = employeeEntity.getDepartmentEntity();
-            this.positionEntity = employeeEntity.getPositionEntity();
-        }
-    }
+//    Set<RoleEntity> roleEntities;
+//    DepartmentEntity departmentEntity;
+//    PositionEntity positionEntity;
+//    TeamEntity teamEntity;
+
+//    public EmployeeDto(EmployeeEntity employeeEntity) {
+//        if (employeeEntity != null) {
+//            this.id = employeeEntity.getId();
+//            this.username = employeeEntity.getUsername();
+//            this.email = employeeEntity.getEmail();
+//            this.roleEntities = employeeEntity.getRoleEntities();
+//            this.authorities = employeeEntity.getRoleEntities().stream()
+//                    .map(auth -> ((RoleEntity) auth).getName()).collect(Collectors.toList());
+//            this.departmentEntity = employeeEntity.getDepartmentEntity();
+//            this.positionEntity = employeeEntity.getPositionEntity();
+//        }
+//    }
 }

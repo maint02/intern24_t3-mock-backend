@@ -17,7 +17,9 @@ public class IssueDAOImpl extends AbstractBaseDAO implements IssueDAO {
         PagingDataDTO pagingDataOut=new PagingDataDTO();
         StringBuilder sb=new StringBuilder();
         Map<String, Object> parameters = new HashMap<>();
-        sb.append("select i.id, i.name,i.due_date,i.priority from issue i where 1=1 ");
+        sb.append("select i.id, i.name,i.due_date,i.priority,i.start_date,i.done_percent, ");
+        sb.append(" i.reason,i.description,i.type,i.project_id,i.status_id,i.employee_reported_id ");
+        sb.append(" from issue i where 1=1 ");
         if(issueSearchDTO.getProjectId()!=null){
             sb.append("and i.project_id=:idProject ");
             parameters.put("idProject",issueSearchDTO.getProjectId());

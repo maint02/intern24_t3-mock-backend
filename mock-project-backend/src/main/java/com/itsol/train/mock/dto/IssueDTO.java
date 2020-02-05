@@ -34,4 +34,5 @@ public class IssueDTO {
     private ProjectDTO projectDTO;
     private StatusDTO statusDTO;
     private Long employeeReportedId;
+    private String statusName;
 }

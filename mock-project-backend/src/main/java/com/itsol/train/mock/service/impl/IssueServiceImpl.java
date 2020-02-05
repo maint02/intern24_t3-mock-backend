@@ -98,12 +98,16 @@ public class IssueServiceImpl implements IssueService {
     public PagingDataDTO getByProjectIdPaging(Long id, Pageable pageable) {
         PagingDataDTO pagingDataDTO=new PagingDataDTO();
         EntityManager entityManager=entityManagerFactory.createEntityManager();
-        EntityTransaction transaction=entityManager.getTransaction();
+        //EntityTransaction transaction=entityManager.getTransaction();
         try {
             ProjectEntity projectEntity=entityManager.find(ProjectEntity.class,id);
             Page<IssueEntity> pageResult=issueRepository.getAllByProjectEntity(projectEntity,pageable);
             List<IssueEntity> issueEntities=pageResult.getContent();
             List<IssueDTO> issueDTOS=modelMapper.map(issueEntities, new TypeToken<List<IssueDTO>>(){}.getType());
+            for (IssueDTO i:issueDTOS){
+                StatusEntity statusEntity=entityManager.find(StatusEntity.class,i.getStatusId());
+                i.setStatusName(statusEntity.getName()); // lấy tên status của issue này.
+            }
             pagingDataDTO.setPage(pageable.getPageNumber()+1);
             pagingDataDTO.setTotalPage(pageResult.getTotalPages());
             pagingDataDTO.setListData(issueDTOS);

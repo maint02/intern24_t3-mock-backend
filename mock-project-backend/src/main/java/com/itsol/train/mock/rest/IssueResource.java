@@ -113,16 +113,13 @@ public class IssueResource {
         boolean kqAdd=employeeIssueService.save(employeeIssueDTO);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
-    @GetMapping("/issue/get-by-project/{id}/search")
+    @PostMapping("/issue/get-by-project/{id}/search")
     public ResponseEntity<ResponseDto> searchIssue(@PathVariable (name = "id") Long id,
-                                                   @RequestParam (value = "name", required = false,defaultValue ="") String name,
                                                    @RequestParam( value = "page", required = false,defaultValue ="1" ) int page,
                                                    @RequestParam(value = "limit", required = false,defaultValue ="5") int limit,
-                                                   @RequestParam(value = "priority", required = false,defaultValue ="") String priority){
-        IssueSearchDTO issueSearchDTO=new IssueSearchDTO();
-        issueSearchDTO.setName(name);
+                                                   @RequestBody IssueSearchDTO issueSearchDTO
+                                                   ){
         issueSearchDTO.setProjectId(id);
-        issueSearchDTO.setPriority(priority);
         //--------------------------
         ResponseDto responseDto=new ResponseDto();
         PagingDataDTO pagingDataDTOInput=new PagingDataDTO();

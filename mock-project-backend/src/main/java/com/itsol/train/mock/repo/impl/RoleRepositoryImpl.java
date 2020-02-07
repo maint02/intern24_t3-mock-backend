@@ -23,7 +23,8 @@ public class RoleRepositoryImpl implements RoleRepository {
             RoleEntity singleResult = query.getSingleResult();
             session.getTransaction().commit();
             return singleResult;
-        } catch (Exception e) {
+
+        } catch (HibernateException e) {
             session.getTransaction().rollback();
             logger.error(e.getMessage());
         }
@@ -31,6 +32,9 @@ public class RoleRepositoryImpl implements RoleRepository {
             session.close();
         }
         return null;
-
+    }
+    @Override
+    public RoleEntity findByRoleName(String roleName) {
+        return null;
     }
 }

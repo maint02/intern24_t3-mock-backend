@@ -5,13 +5,16 @@ import com.itsol.train.mock.entity.*;
 import com.itsol.train.mock.exception.EmailExistException;
 import com.itsol.train.mock.exception.UsernameExistException;
 import com.itsol.train.mock.repo.*;
-import com.itsol.train.mock.security.SecurityUtils;
 import com.itsol.train.mock.service.EmployeeService;
+import com.itsol.train.mock.service.MailService;
 import com.itsol.train.mock.utils.DataUtil;
+import com.itsol.train.mock.vm.EmployeeVm;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,48 +23,47 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeServiceImpl implements EmployeeService {
-
-    private Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
-    private EmployeeRepository employeeRepository;
+    EmployeeRepository employeeRepository;
 
     @Autowired
-    private TeamRepository teamRepository;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
-    private DepartmentRepository departmentRepository;
+    ModelMapper modelMapper;
 
     @Autowired
-    private PositionRepository positionRepository;
+    RoleRepository roleRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    DepartmentRepository departmentRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    TeamRepository teamRepository;
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PositionRepository positionRepository;
+
+    @Autowired
+    EmployeeRepositoryJpa employeeRepositoryJpa;
+
+    @Autowired
+    MailService mailService;
 
     @Override
     @Transactional
-    public void register(EmployeeDto employeeDto) throws UsernameExistException, EmailExistException {
-        log.trace("Service to register user in web site");
-        String username = employeeDto.getUsername();
-        Optional<EmployeeEntity> checkUsername = employeeRepository.findOneWithAuthoritiesByUsername(username);
-        if (checkUsername.isPresent()) {
-            throw new UsernameExistException("Username has exist in database");
-        }
-        Optional<EmployeeEntity> checkEmail = employeeRepository.findOneWithAuthoritiesByEmail(username);
-        if (checkEmail.isPresent()) {
-            throw new EmailExistException("Email has exist in database");
-        }
+    public EmployeeEntity createEmployee(EmployeeDto employeeDto) throws UsernameExistException, EmailExistException {
+        log.trace("REST request to register user website: {}", employeeDto);
+
         EmployeeEntity entity = modelMapper.map(employeeDto, EmployeeEntity.class);
-        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-        entity.setIsActived(Boolean.TRUE);
-        entity.setLastAccess(new Date());
-        entity.setCreatedDate(new Date());
+        String randomString = DataUtil.generateRandomString(12);
+        entity.setPassword(passwordEncoder.encode(randomString));
+        entity.setOriginalPassword(randomString);
+        entity.setIsActived(Boolean.FALSE);
+        entity.setIsApproved(Boolean.FALSE);
 
         RoleEntity roleDefault = roleRepository.findByDefault();
         Set<RoleEntity> roleEntities = new HashSet<>();
@@ -76,21 +78,118 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         PositionEntity positionEntity = positionRepository.findByDefault();
         entity.setPositionEntity(positionEntity);
-        employeeRepository.save(entity);
-    }
 
-    @Transactional(readOnly = true)
-    public Optional<EmployeeEntity> getEmployeeWithRoles() {
-        return SecurityUtils.getCurrentUserLogin().flatMap(employeeRepository::findOneWithAuthoritiesByUsername);
+        EmployeeEntity employeeEntity = employeeRepositoryJpa.save(entity);
+        return employeeEntity;
     }
 
     @Override
-    @Transactional
     public boolean resetPassword(String email) throws UsernameNotFoundException {
         if (!DataUtil.isNotNullAndEmptyString(email)) {
             throw new UsernameNotFoundException("Email '" + email + "' not found");
         }
-//        Optional<EmployeeDto> employeeDtoOptional =
+        EmployeeEntity employeeEntityByEmail = employeeRepositoryJpa.findByEmail(email);
+        if (employeeEntityByEmail == null) {
+            throw new UsernameNotFoundException("Email '" + email + "' not found");
+        }
+        String randomString = DataUtil.generateRandomString(12);
+        String newPassword = passwordEncoder.encode(randomString);
+        employeeEntityByEmail.setPassword(newPassword);
+
+        boolean result = employeeRepository.updateEmployeeEntity(employeeEntityByEmail);
+        if (result) {
+            mailService.sendResetPassword(email, randomString);
+        }
         return false;
     }
+
+    @Override
+    public EmployeeEntity findByUsername(String username) {
+        Optional<EmployeeEntity> checkUsername = employeeRepositoryJpa.findOneWithAuthoritiesByUsername(username);
+        return checkUsername.isPresent() ? checkUsername.get() : null;
+    }
+
+    @Override
+    public EmployeeEntity findByEmail(String email) {
+        Optional<EmployeeEntity> checkEmail = employeeRepositoryJpa.findOneWithAuthoritiesByEmail(email);
+        return checkEmail.isPresent() ? checkEmail.get() : null;
+    }
+
+    @Override
+    public boolean activeEmployee(String username) {
+        try {
+            EmployeeEntity entity = employeeRepositoryJpa.findByUsername(username);
+            entity.setIsActived(true);
+            employeeRepositoryJpa.save(entity);
+        } catch (Exception e) {
+            log.error(e + "");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public EmployeeEntity getEmployeeInfo(String username) {
+        EmployeeEntity jpaByUsername = employeeRepositoryJpa.findByUsername(username);
+        return jpaByUsername;
+    }
+
+    @Override
+    public EmployeeDto getById(long id) {
+        EmployeeDto employeeEntityById = employeeRepository.findEmployeeById(id);
+        return employeeEntityById;
+    }
+
+    @Override
+    public boolean deleteById(long id) {
+        boolean result = employeeRepository.deleteEmployeeById(id);
+        return result;
+    }
+
+//    @Override
+//    public boolean updateById(EmployeeDto employeeDto) {
+//        Long id = employeeDto.getId();
+//        EmployeeEntity employeeEntityById = employeeRepository.getEmployeeEntityById(id);
+//        if (employeeEntityById != null) {
+//            EmployeeEntity entity = modelMapper.map(employeeDto, EmployeeEntity.class);
+//            entity.setIsActived(employeeDto.getIsActived());
+//            entity.setIsApproved(employeeDto.getIsApproved());
+//            entity.setDepartmentEntity(employeeDto.getDepartmentEntity());
+//            entity.setPositionEntity(employeeDto.getPositionEntity());
+//            entity.setTeamEntity(employeeDto.getTeamEntity());
+//            entity.setAddress(employeeDto.getAddress());
+//            entity.setBirthday(employeeDto.getBirthday());
+//            entity.setCreatedDate(employeeDto.getCreatedDate());
+//            entity.setGraduatedYear(employeeDto.getGraduatedYear());
+//            entity.setRoleEntities(employeeDto.getRoleEntities());
+//            entity.setEmail(employeeDto.getEmail());
+//            entity.setFullName(employeeDto.getFullName());
+//            entity.setImageUrl(employeeDto.getImageUrl());
+//            entity.setIsLeader(employeeDto.getIsLeader());
+//            entity.setIsManager(employeeDto.getIsManager());
+//            entity.setPhoneNumber(employeeDto.getPhoneNumber());
+//            entity.setSkypeAccount(employeeDto.getSkypeAccount());
+//            entity.setUniversity(employeeDto.getUniversity());
+//            entity.setUserType(employeeDto.getUserType());
+//            employeeRepositoryJpa.save(entity);
+//            return true;
+//        } else {
+//            throw new UsernameNotFoundException("Employee has id" + id + "not found");
+//        }
+//    }
+
+    @Override
+    public List<EmployeeDto> getAllEmployee() {
+        List<EmployeeDto> allDtos = employeeRepository.getAll();
+        return allDtos;
+    }
+
+    @Override
+    public Page<EmployeeDto> getListByParams(EmployeeVm employeeVm) {
+        Page<EmployeeDto> dtos = employeeRepository.findListEmployeesByParams(employeeVm);
+        return dtos;
+    }
 }
+
+
+

@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -19,6 +20,7 @@ public class EmpIssuePK implements Serializable {
         this.employeeId = employeeId;
         this.issueId = issueId;
     }
+
 
     @Column(name = "employee_id")
     Long employeeId;

@@ -13,8 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.Collections;
 
@@ -49,13 +49,16 @@ public class UserJWTController {
         return new ResponseEntity<>(Collections.singletonMap("id_token", jwt), httpHeaders, HttpStatus.OK);
     }
 
-//    @PostMapping(value = "/resetPassword")
-//    public ResponseEntity<Boolean> resetPassword(@Valid @RequestBody EmployeeDto employeeDto) {
-//        try {
-//            employeeService.resetPassword()
-//        } catch () {
-//
-//        }
-//
-//    }
+
+    @PostMapping(value = "/resetPassword")
+    public ResponseEntity<Boolean> resetPassword(@Valid @RequestBody EmployeeDto employeeDto) {
+        try {
+            boolean result = employeeService.resetPassword(employeeDto.getEmail());
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

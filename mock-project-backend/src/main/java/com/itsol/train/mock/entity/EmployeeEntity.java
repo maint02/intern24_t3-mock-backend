@@ -35,19 +35,22 @@ public class EmployeeEntity implements Serializable {
     @Column(name = "image_url")
     String imageUrl;
 
-    @Column(name = "last_access", nullable = false)
+    @Column(name = "last_access")
     Date lastAccess;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
+
     Date createdDate;
 
     @Column(name = "email", nullable = false, unique = true)
     String email;
 
-    @Column(name = "phone_number")
+
+    @Column(name = "phone_number",nullable = false)
     String phoneNumber;
 
-    @Column(name = "skype_account", nullable = false, unique = true)
+    @Column(name = "skype_account", unique = true)
+
     String skypeAccount;
 
     @Column(name = "user_type", nullable = false)
@@ -71,7 +74,14 @@ public class EmployeeEntity implements Serializable {
     @Column(name = "is_actived")
     Boolean isActived;
 
-    @Column(name = "birthday")
+
+    @Column(name = "is_approved")
+    Boolean isApproved;
+
+    @Column(name = "reason_reject")
+    String reasonReject;
+
+    @Column(name = "birthday",nullable = false)
     Date birthday;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -93,4 +103,6 @@ public class EmployeeEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     Set<RoleEntity> roleEntities;
 
+    @Transient
+    String originalPassword;
 }

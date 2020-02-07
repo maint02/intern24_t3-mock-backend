@@ -25,6 +25,7 @@ public class EmployeeIssueEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("issue_id")
+
     IssueEntity issueEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,11 +34,13 @@ public class EmployeeIssueEntity implements Serializable {
 
     @Column(name = "spent_time", nullable = false)
     Long spentTime;
+//     Float spentTime;
 
     @Column(name = "note")
     String note;
 
     @Column(name = "employee_assigned_id")
     Long employeeAssignId;
+
 
 }

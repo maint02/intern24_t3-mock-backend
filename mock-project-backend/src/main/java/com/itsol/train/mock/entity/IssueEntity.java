@@ -33,6 +33,7 @@ public class IssueEntity implements Serializable {
 
     @Column(name = "done_percent", nullable = false)
     Long donePercent;
+//     Float donePercent;
 
     @Column(name = "priority", nullable = false)
     String priority;
@@ -54,7 +55,9 @@ public class IssueEntity implements Serializable {
     @JoinColumn(name = "status_id", nullable = false)
     StatusEntity statusEntity;
 
+
     @ManyToOne
     @JoinColumn(name = "employee_reported_id")
     EmployeeEntity employeeEntity;
+
 }

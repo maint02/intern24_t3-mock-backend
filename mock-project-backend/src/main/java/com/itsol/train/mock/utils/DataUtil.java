@@ -1,17 +1,8 @@
 package com.itsol.train.mock.utils;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.Random;
 import java.util.UUID;
-
-/**
- * Utility class for data pre-handling
- *
- * @author truongbb
- * @version 1.0
- * @since 2019-11-16
- */
 
 @Slf4j
 public class DataUtil {

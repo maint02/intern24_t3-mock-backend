@@ -1,7 +1,7 @@
 package com.itsol.train.mock.security;
 
 import com.itsol.train.mock.entity.EmployeeEntity;
-import com.itsol.train.mock.repo.EmployeeRepository;
+import com.itsol.train.mock.repo.EmployeeRepositoryJpa;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,23 +24,23 @@ public class UserdetailServiceImpl implements UserDetailsService {
 
     private Logger log = LoggerFactory.getLogger(UserdetailServiceImpl.class);
 
-    private final EmployeeRepository employeeRepository;
 
-    public UserdetailServiceImpl(EmployeeRepository employeeRepository){
-        this.employeeRepository = employeeRepository;
+    private final EmployeeRepositoryJpa employeeRepositoryJpa;
+
+    public UserdetailServiceImpl(EmployeeRepositoryJpa employeeRepositoryJpa){
+        this.employeeRepositoryJpa = employeeRepositoryJpa;
     }
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         log.trace("Service authenticate: {}", login);
         if (new EmailValidator().isValid(login, null)) {
-            return employeeRepository.findOneWithAuthoritiesByEmail(login)
+
+            return employeeRepositoryJpa.findOneWithAuthoritiesByEmail(login)
                     .map(user -> createSpringSecurityUser(login, user))
                     .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " not found in the database"));
         }
-
-        return employeeRepository.findOneWithAuthoritiesByUsername(login)
+        return employeeRepositoryJpa.findOneWithAuthoritiesByUsername(login)
                 .map(user -> createSpringSecurityUser(login, user))
                 .orElseThrow(() -> new UsernameNotFoundException("User " + login + " not found in the database"));
 

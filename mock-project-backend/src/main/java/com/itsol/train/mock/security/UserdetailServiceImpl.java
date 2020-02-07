@@ -24,22 +24,22 @@ public class UserdetailServiceImpl implements UserDetailsService {
 
     private Logger log = LoggerFactory.getLogger(UserdetailServiceImpl.class);
 
+
     private final EmployeeRepositoryJpa employeeRepositoryJpa;
 
     public UserdetailServiceImpl(EmployeeRepositoryJpa employeeRepositoryJpa){
         this.employeeRepositoryJpa = employeeRepositoryJpa;
     }
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         log.trace("Service authenticate: {}", login);
         if (new EmailValidator().isValid(login, null)) {
+
             return employeeRepositoryJpa.findOneWithAuthoritiesByEmail(login)
                     .map(user -> createSpringSecurityUser(login, user))
                     .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " not found in the database"));
         }
-
         return employeeRepositoryJpa.findOneWithAuthoritiesByUsername(login)
                 .map(user -> createSpringSecurityUser(login, user))
                 .orElseThrow(() -> new UsernameNotFoundException("User " + login + " not found in the database"));

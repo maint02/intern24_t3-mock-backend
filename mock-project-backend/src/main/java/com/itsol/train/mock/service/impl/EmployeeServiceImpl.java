@@ -78,6 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         PositionEntity positionEntity = positionRepository.findByDefault();
         entity.setPositionEntity(positionEntity);
+
         EmployeeEntity employeeEntity = employeeRepositoryJpa.save(entity);
         return employeeEntity;
     }

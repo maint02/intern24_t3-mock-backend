@@ -1,5 +1,6 @@
 package com.itsol.train.mock.entity;
 
+import com.itsol.train.mock.dto.EmployeeIssueDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,11 +20,12 @@ public class EmployeeIssueEntity implements Serializable {
     EmpIssuePK empIssuePK;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("employeeId")
+    @MapsId("employee_id")
     EmployeeEntity employeeEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("issueId")
+    @MapsId("issue_id")
+
     IssueEntity issueEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,10 +33,14 @@ public class EmployeeIssueEntity implements Serializable {
     StatusEntity statusEntity;
 
     @Column(name = "spent_time", nullable = false)
-    Float spentTime;
+    Long spentTime;
+//     Float spentTime;
 
     @Column(name = "note")
     String note;
+
+    @Column(name = "employee_assigned_id")
+    Long employeeAssignId;
 
 
 }

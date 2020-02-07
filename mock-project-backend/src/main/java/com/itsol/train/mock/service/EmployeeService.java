@@ -37,6 +37,4 @@ public interface EmployeeService {
     List<EmployeeDto> getAllEmployee();
 
     Page<EmployeeDto> getListByParams(EmployeeVm employeeVm);
-
-
 }

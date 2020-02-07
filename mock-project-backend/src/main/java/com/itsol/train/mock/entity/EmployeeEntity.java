@@ -39,15 +39,18 @@ public class EmployeeEntity implements Serializable {
     Date lastAccess;
 
     @Column(name = "created_date")
+
     Date createdDate;
 
     @Column(name = "email", nullable = false, unique = true)
     String email;
 
+
     @Column(name = "phone_number",nullable = false)
     String phoneNumber;
 
     @Column(name = "skype_account", unique = true)
+
     String skypeAccount;
 
     @Column(name = "user_type", nullable = false)
@@ -70,6 +73,7 @@ public class EmployeeEntity implements Serializable {
 
     @Column(name = "is_actived")
     Boolean isActived;
+
 
     @Column(name = "is_approved")
     Boolean isApproved;

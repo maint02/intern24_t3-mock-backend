@@ -64,13 +64,15 @@ CREATE TABLE team (
 );
 
 CREATE TABLE employee_issue (
-    id            NUMBER(10) primary key,
-    employee_id   NUMBER(10) NOT NULL,
-    issue_id      NUMBER(10) NOT NULL,
+	employee_id   NUMBER(10) NOT NULL,
+    issue_id       NUMBER(10) NOT NULL,
     spent_time    FLOAT(10),
     note          VARCHAR2(1000),
     status_id     NUMBER(10) NOT NULL,
-    created_date  DATE
+	created_date  DATE,
+	employee_assigned_id NUMBER(10) NOT NULL,
+    PRIMARY KEY ( employee_id,
+                  issue_id )  
 );
 
 CREATE TABLE issue (
@@ -85,7 +87,7 @@ CREATE TABLE issue (
     type           VARCHAR2(255),
     project_id     NUMBER(10) NOT NULL,
     status_id      NUMBER(10) NOT NULL,
-    person_created_id number(10) not null
+    employee_reported_id number(10) not null
 );
 
 CREATE TABLE employee (

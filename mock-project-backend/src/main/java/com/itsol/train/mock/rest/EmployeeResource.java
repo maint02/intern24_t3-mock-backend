@@ -12,7 +12,7 @@ import com.itsol.train.mock.service.EmployeeService;
 import com.itsol.train.mock.service.MailService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import oracle.jdbc.proxy.annotation.Pre;
+//import oracle.jdbc.proxy.annotation.Pre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,3 +10,5 @@ drop sequence AUTO_INCRE_SEQ_ROLE;
 drop sequence AUTO_INCRE_SEQ_STATUS;
 drop sequence AUTO_INCRE_SEQ_STATUS_TYPE;
 drop sequence AUTO_INCRE_SEQ_TEAM;
+
+drop sequence AUTO_INCRE_SEQ_EMP_ISSUE;

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 public class PageBuilder {
     public static Pageable buildPageable(BaseDto obj) {
         Pageable pageable = null;
-        if (DataUtil.isNotNullAndEmptyString(obj.getSort())) {
+        if (!DataUtil.isNotNullAndEmptyString(obj.getSort())) {
             pageable = PageRequest.of(obj.getPage(), obj.getPageSize(), null);
         } else {
             String[] sorts = obj.getSort().split(",");

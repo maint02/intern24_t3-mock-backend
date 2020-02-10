@@ -78,7 +78,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         PositionEntity positionEntity = positionRepository.findByDefault();
         entity.setPositionEntity(positionEntity);
-
         EmployeeEntity employeeEntity = employeeRepositoryJpa.save(entity);
         return employeeEntity;
     }
@@ -178,16 +177,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        }
 //    }
 
-    @Override
-    public List<EmployeeDto> getAllEmployee() {
-        List<EmployeeDto> allDtos = employeeRepository.getAll();
-        return allDtos;
-    }
+//    @Override
+//    public Page<EmployeeDto> getAllEmployee() {
+//        Page<EmployeeDto> allDtos = employeeRepository.getAll();
+//        return allDtos;
+//    }
 
     @Override
     public Page<EmployeeDto> getListByParams(EmployeeVm employeeVm) {
-        Page<EmployeeDto> dtos = employeeRepository.findListEmployeesByParams(employeeVm);
-        return dtos;
+        return employeeRepository.findListEmployeesByParams(employeeVm);
     }
 }
 

@@ -26,13 +26,15 @@ public class MailServiceImpl implements MailService {
             String htmlMsg = "<h3>Activation Email</h3>"
                     + "<div>You've created account successfully!<br> " +
                     "Your default password is <strong>" + originalPass + "</strong>. Use this password to login our system." +
-//                    "<br>Before login, you must click <a href='http://192.168.0.103:8008/smart_office/api/user/get-employee-info/" + username + "'>here</a> to active your account. </div>";
-                    "<br>Before login, you must click <a href='http://172.1.2.95:8008/smart_office/api/user/get-employee-info/" + username + "'>here</a> to active your account. </div>";
+                    "<br>Before login, you must click <a href='http://192.168.0.103:8082/smart_office/api/user/get-employee-info/" + username + "'>here</a> to active your account. </div>";
+//                    "<br>Before login, you must click <a href='http://172.1.2.95:8082/smart_office/api/user/get-employee-info/" + username + "'>here</a> to active your account. </div>";
             mimeMessageHelper.setText(htmlMsg, true);
             mimeMessageHelper.setTo(receiverEmail);
             mimeMessageHelper.setSubject("Smart Office - Activation Email");
             javaMailSender.send(mimeMessage);
+            log.info("send activation email success");
         } catch (MessagingException e) {
+            log.info("Send activation email failed");
             e.printStackTrace();
         }
 //        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

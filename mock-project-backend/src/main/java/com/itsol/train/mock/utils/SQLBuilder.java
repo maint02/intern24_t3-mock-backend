@@ -2,10 +2,13 @@ package com.itsol.train.mock.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+
 import java.io.*;
+
 
 @Slf4j
 public class SQLBuilder {
+
     public static final String SQL_MODULE_EMPLOYEE = "employee";
     public static final String SQL_MODULE_DEMO = "demo";
 

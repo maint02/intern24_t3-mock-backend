@@ -10,16 +10,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
-//@AllArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Embeddable
 public class EmpIssuePK implements Serializable {
-    public EmpIssuePK(Long employeeId, Long issueId) {
-        this.employeeId = employeeId;
-        this.issueId = issueId;
-    }
 
 
     @Column(name = "employee_id")

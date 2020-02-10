@@ -1,6 +1,5 @@
 package com.itsol.train.mock.repo;
 
-
 import com.itsol.train.mock.dto.EmployeeDto;
 import com.itsol.train.mock.entity.EmployeeEntity;
 import com.itsol.train.mock.vm.EmployeeVm;
@@ -16,11 +15,9 @@ public interface EmployeeRepository {
 
     EmployeeDto findEmployeeById(long id);
 
-    boolean insertEmployeeEntity(EmployeeEntity employeeEntity);
+//    boolean insertEmployeeEntity(EmployeeEntity employeeEntity);
 
     boolean deleteEmployeeById(long id);
-
-    List<EmployeeDto> getAll();
 
     Page<EmployeeDto> findListEmployeesByParams(EmployeeVm employeeVm);
 

@@ -1,6 +1,7 @@
 package com.itsol.train.mock.repo.impl;
 
 
+import com.itsol.train.mock.constants.RoleConstants;
 import com.itsol.train.mock.dto.EmployeeDto;
 import com.itsol.train.mock.entity.EmployeeEntity;
 import com.itsol.train.mock.repo.EmployeeRepository;
@@ -40,6 +41,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             session.getTransaction().commit();
         } catch (HibernateException e) {
             session.getTransaction().rollback();
+            log.error(e.getMessage(), e);
         } finally {
             session.close();
         }
@@ -88,14 +90,15 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             return dto;
         } catch (HibernateException e) {
             session.getTransaction().rollback();
+            log.error(e.getMessage(), e);
         } finally {
             session.close();
         }
         return null;
     }
 
-    @Override
-    public boolean insertEmployeeEntity(EmployeeEntity employeeEntity) {
+//    @Override
+//    public boolean insertEmployeeEntity(EmployeeEntity employeeEntity) {
 //        Session session = HibernateUtil.getSessionFactory().openSession();
 //        try {
 //            session.beginTransaction();
@@ -107,8 +110,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 //        } finally {
 //            session.close();
 //        }
-        return false;
-    }
+//        return false;
+//    }
 
     @Override
     public boolean deleteEmployeeById(long id) {
@@ -126,42 +129,26 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             return true;
         } catch (HibernateException e) {
             session.getTransaction().rollback();
+            log.error(e.getMessage(), e);
         } finally {
             session.close();
         }
         return false;
     }
 
+    // get all & get all by params
     @Override
-    public List<EmployeeDto> getAll() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        String sql = SQLBuilder.readSqlFromFile(SQLBuilder.SQL_MODULE_EMPLOYEE, "find-all-employees");
-        try {
-            session.beginTransaction();
-            NativeQuery<EmployeeDto> sqlQuery = session.createSQLQuery(sql);
-            List<EmployeeDto> employeeDtos = sqlQuery.list();
-            session.getTransaction().commit();
-            return employeeDtos;
-        } catch (HibernateException e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return null;
-    }
-
-
-    @Override
-    public Page<EmployeeDto> findListEmployeesByParams(EmployeeVm employeeVm){
+    public Page<EmployeeDto> findListEmployeesByParams(EmployeeVm employeeVm) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         String sql = SQLBuilder.readSqlFromFile(SQLBuilder.SQL_MODULE_EMPLOYEE, "find-employee");
         try {
             session.beginTransaction();
-            if (DataUtil.isNotNullAndEmptyString(employeeVm.getUsername())){
-                sql += " and e.username like ':p_employee_username'";
+            if (DataUtil.isNotNullAndEmptyString(employeeVm.getUsername())) {
+                sql += " and e.username like :p_employee_username";
             }
-            if (DataUtil.isNotNullAndEmptyString(employeeVm.getDepartmentName())){
-                sql += " and e.username like ':p_employee_department'";
+//            tìm nhân viên cùng phòng ban
+            if (DataUtil.isNotNullAndEmptyString(employeeVm.getDepartmentName())) {
+                sql += " and e.department like :p_employee_department";
             }
 //            if (DataUtil.isNotNullAndEmptyString(employeeVm.getAddress())){
 //                sql += " and e.username like ':p_employee_address'";
@@ -169,33 +156,19 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 //            if (DataUtil.isNotNullAndEmptyString(employeeVm.getPositionName())){
 //                sql += " and e.username like ':p_employee_position'";
 //            }
-            if (DataUtil.isNotNullAndEmptyString(employeeVm.getRoleName())){
-                sql += " and e.username like ':p_employee_rolename'";
+            if (DataUtil.isNotNullAndEmptyString(employeeVm.getMyRoleName()) && employeeVm.getMyRoleName().trim().equalsIgnoreCase(RoleConstants.MANAGER)) {
+                sql += " and er.role_id < :p_employee_roleId\n" +
+                        " and d.id = :p_employee_departmentId ";
             }
             NativeQuery<EmployeeDto> sqlQuery = session.createSQLQuery(sql);
-            if (!DataUtil.isNotNullAndEmptyString(employeeVm.getUsername())){
-                sqlQuery.setParameter("p_employee_username", "%" +
-                        employeeVm.getUsername().trim()
-                                .replace("\\", "\\\\")
-                                .replaceAll("%", "\\%")
-                                .replaceAll("_", "\\_")
-                        + "%");
+            if (DataUtil.isNotNullAndEmptyString(employeeVm.getUsername())) {
+                sqlQuery.setParameter("p_employee_username", DataUtil.removeWildcardCharacters(employeeVm.getUsername()));
             }
-            if (!DataUtil.isNotNullAndEmptyString(employeeVm.getDepartmentName())){
-                sqlQuery.setParameter("p_employee_department", "%" +
-                        employeeVm.getUsername().trim()
-                                .replace("\\", "\\\\")
-                                .replaceAll("%", "\\%")
-                                .replaceAll("_", "\\_")
-                        + "%");
+            if (DataUtil.isNotNullAndEmptyString(employeeVm.getDepartmentName())) {
+                sqlQuery.setParameter("p_employee_department", DataUtil.removeWildcardCharacters(employeeVm.getDepartmentName()));
             }
-            if (!DataUtil.isNotNullAndEmptyString(employeeVm.getRoleName())) {
-                sqlQuery.setParameter("p_employee_rolename", "%" +
-                        employeeVm.getUsername().trim()
-                                .replace("\\", "\\\\")
-                                .replaceAll("%", "\\%")
-                                .replaceAll("_", "\\_")
-                        + "%");
+            if (DataUtil.isNotNullAndEmptyString(employeeVm.getRoleName())) {
+                sqlQuery.setParameter("p_employee_rolename", DataUtil.removeWildcardCharacters(employeeVm.getRoleName()));
             }
             sqlQuery.addScalar("id", new LongType())
                     .addScalar("username", new StringType())
@@ -238,6 +211,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             session.getTransaction().commit();
         } catch (HibernateException e) {
             session.getTransaction().rollback();
+            log.error(e.getMessage(), e);
         } finally {
             session.close();
         }
@@ -245,7 +219,19 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     private int total() {
-        return 0;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        int count = 0;
+        try {
+            String sql = SQLBuilder.readSqlFromFile(SQLBuilder.SQL_MODULE_EMPLOYEE, "count-employee");
+            NativeQuery sqlQuery = session.createSQLQuery(sql);
+            count = sqlQuery.list().size();
+        } catch (HibernateException e) {
+            session.getTransaction().rollback();
+            log.error(e.getMessage(), e);
+        } finally {
+            session.close();
+        }
+        return count;
     }
 //    @Override
 //    public List<EmployeeEntity> getEmployeesById(long id) {
@@ -253,6 +239,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 //        StringBuilder sql = new StringBuilder("");
 //
 //        try {
+
 //            session.beginTransaction();
 //            FileReader fileReader = new FileReader(new File("./sql.employee/find-employee.sql"));
 //            sql.append(fileReader);

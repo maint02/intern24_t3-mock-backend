@@ -1,2 +1,2 @@
-SELECT COUNT(1) FROM employee e
+SELECT COUNT(e.id) FROM employee e
 where 1=1

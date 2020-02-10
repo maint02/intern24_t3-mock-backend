@@ -21,4 +21,9 @@ public class EmployeeVm extends BaseDto implements Serializable {
     String university;
     String address;
     Integer graduatedYear;
+    Integer roleId;
+
+    String myRoleName;
+    Integer myDepartmentId;
+
 }

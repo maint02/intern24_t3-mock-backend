@@ -34,7 +34,11 @@ public interface EmployeeService {
 
 //    boolean updateById (EmployeeDto employeeDto);
 
-    List<EmployeeDto> getAllEmployee();
+//    Page<EmployeeDto> getAllEmployee();
 
     Page<EmployeeDto> getListByParams(EmployeeVm employeeVm);
+
+
+
+
 }

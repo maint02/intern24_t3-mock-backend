@@ -2,7 +2,6 @@ package com.itsol.train.mock.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -16,7 +15,9 @@ import java.io.Serializable;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
+
 public class RoleEntity implements  GrantedAuthority {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUTO_INCRE_SEQ_ROLE")
@@ -30,5 +31,4 @@ public class RoleEntity implements  GrantedAuthority {
     public String getAuthority() {
         return name;
     }
-
 }

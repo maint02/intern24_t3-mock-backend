@@ -6,6 +6,8 @@ import com.itsol.train.mock.entity.EmployeeEntity;
 import com.itsol.train.mock.exception.EmailExistException;
 import com.itsol.train.mock.exception.UsernameExistException;
 import com.itsol.train.mock.rest.EmployeeResource;
+import com.itsol.train.mock.vm.EmployeeVm;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -32,9 +34,11 @@ public interface EmployeeService {
 
 //    boolean updateById (EmployeeDto employeeDto);
 
-    List<EmployeeDto> getAllEmployee();
+//    Page<EmployeeDto> getAllEmployee();
 
-    List<EmployeeDto> getListByUsername();
+    Page<EmployeeDto> getListByParams(EmployeeVm employeeVm);
+
+
 
 
 }

@@ -8,11 +8,13 @@ import com.itsol.train.mock.repo.*;
 import com.itsol.train.mock.service.EmployeeService;
 import com.itsol.train.mock.service.MailService;
 import com.itsol.train.mock.utils.DataUtil;
+import com.itsol.train.mock.vm.EmployeeVm;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -175,16 +177,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        }
 //    }
 
-    @Override
-    public List<EmployeeDto> getAllEmployee() {
-        List<EmployeeDto> allDtos = employeeRepository.getAll();
-        return allDtos;
-    }
+//    @Override
+//    public Page<EmployeeDto> getAllEmployee() {
+//        Page<EmployeeDto> allDtos = employeeRepository.getAll();
+//        return allDtos;
+//    }
 
     @Override
-    public List<EmployeeDto> getListByUsername() {
-        List<EmployeeDto> dtos = employeeRepository.findListEmployeesByParams();
-        return dtos;
+    public Page<EmployeeDto> getListByParams(EmployeeVm employeeVm) {
+        return employeeRepository.findListEmployeesByParams(employeeVm);
     }
 }
 

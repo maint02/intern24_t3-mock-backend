@@ -3,9 +3,9 @@ select e.id, e.username, e.image_url imageUrl, e.fullname, e.last_access lastAcc
     e.is_actived isActived, e.birthday,
     er.role_id roleId, r.name roleName, e.department_id departmentId, d.name departmentName, e.position_id positionId, p.name positionName,e.team_id teamId, t.name teamName
 from employee e
-join employee_role er on e.id = er.employee_id
-join role r on er.employee_id = r.id
-join position p on p.id = e.position_id
-join team t on t.id = e.team_id
-join department d on d.id = e.department_id
+left join employee_role er on e.id = er.employee_id
+left join role r on er.role_id = r.id
+left join position p on p.id = e.position_id
+left join team t on t.id = e.team_id
+left join department d on d.id = e.department_id
 where 1 = 1

@@ -11,6 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -30,6 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedSlash(true);
+        return firewall;
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
@@ -39,12 +49,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/api/login/*").permitAll()
                 .antMatchers("/api/authenticate").permitAll()
                 .antMatchers("/api/employee/active-account/*").permitAll()
                 .antMatchers("/api/logout").permitAll()
-                .antMatchers("/api/employee/register").permitAll()
-                .antMatchers("/api/*").permitAll()
+//                .antMatchers("/api/employee/register").permitAll()
+                .antMatchers("/api/user/register").permitAll()
+//                .antMatchers("/api/user/search").permitAll()
+//                .antMatchers("/api/employee/get/*").permitAll()
 //                .antMatchers("/api/product/**").hasAnyRole(RoleEntitesConstants.EMPLOYEE, RoleEntitesConstants.ADMIN)
 //                .antMatchers("/api/admin/**").hasAnyRole(RoleEntitesConstants.ADMIN)
 //                .antMatchers("/api/**").authenticated()

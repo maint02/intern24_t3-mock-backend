@@ -9,12 +9,14 @@ import com.itsol.train.mock.repo.EmployeeRepository;
 import com.itsol.train.mock.repo.EmployeeRepositoryJpa;
 import com.itsol.train.mock.service.EmployeeService;
 import com.itsol.train.mock.service.MailService;
+import com.itsol.train.mock.vm.EmployeeVm;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import oracle.jdbc.proxy.annotation.Pre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,10 +24,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@RequestMapping("/api/employee")
+@RequestMapping("/api/user")
 public class EmployeeResource {
 
     Logger log = LoggerFactory.getLogger(EmployeeResource.class);
@@ -65,7 +69,7 @@ public class EmployeeResource {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-//        @GetMapping("/get-employee-info-by-username")
+    //        @GetMapping("/get-employee-info-by-username")
 //    public EmployeeEntity getEmployeeInfo(@RequestParam String username) {
 //        EmployeeEntity employeeInfo = getEmployeeInfo(username);
 //        employeeInfo.setPassword(null);
@@ -74,20 +78,36 @@ public class EmployeeResource {
 
 
     //    sau khi login thành công sẽ gọi đến api này để lấy thông tin employee
-    @GetMapping("/get/{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") long id) {
-        EmployeeDto employeeInfo = employeeService.getById(id);
-        return new ResponseEntity<>(employeeInfo, HttpStatus.OK);
-    }
-
-//api search by username như id
-//    @GetMapping("/get/{username}")
-//    public ResponseEntity<EmployeeDto> getEmployeeByUsername(@PathVariable("username") String username) {
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") long id) {
 //        EmployeeDto employeeInfo = employeeService.getById(id);
 //        return new ResponseEntity<>(employeeInfo, HttpStatus.OK);
 //    }
-// search bằng các điều kiện khác -> trả 1 list -> viết hàm search
-//    @PostMapping("/")
+
+    @GetMapping("/get/{username}")
+    public ResponseEntity<EmployeeDto> getEmployeeByUsername(@PathVariable("username") String username) {
+        EmployeeVm employeeVm = new EmployeeVm();
+        employeeVm.setUsername(username);
+        Page<EmployeeDto> emp = employeeService.getListByParams(employeeVm);
+        Optional<EmployeeDto> first = emp.get().findFirst();
+        return new ResponseEntity<>(first.isPresent() ? first.get() : null, HttpStatus.OK);
+    }
+
+//    trả về danh sách nhân viên
+//    @GetMapping("/get/{roleName}")
+//    public ResponseEntity<EmployeeDto> getEmployeeByRoleName(@PathVariable("roleName") String roleName){
+//        EmployeeVm employeeVm = new EmployeeVm();
+//        employeeVm.setRoleName(roleName);
+//        Page<EmployeeDto> emp = employeeService.getListByParams(employeeVm);
+//        Stream<EmployeeDto> dtos = emp.get();
+//        return new ResponseEntity<>(dtos , HttpStatus.OK);
+//    }
+    // search bằng các điều kiện khác -> trả 1 list -> viết hàm search
+    @PostMapping("/search")
+    public ResponseEntity<Page<EmployeeDto>> findListByParams(@RequestBody EmployeeVm employeeVm) {
+        Page<EmployeeDto> data = employeeService.getListByParams(employeeVm);
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('HR')")
@@ -137,17 +157,17 @@ public class EmployeeResource {
         return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //      get all employee
-    @GetMapping(value = "/getAll")
-    public ResponseEntity<List<EmployeeDto>> getAll() {
-        List<EmployeeDto> allEmployee = employeeService.getAllEmployee();
-        if (allEmployee == null) {
-            log.error("can't get all employee");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(allEmployee, HttpStatus.OK);
-    }
 
-//    get list by params
+//    //      get all employee
+//    @GetMapping(value = "/getAll")
+//    public ResponseEntity<Page<EmployeeDto>> getAll() {
+//        Page<EmployeeDto> allEmployee = employeeService.getAllEmployee();
+//        if (allEmployee == null) {
+//            log.error("can't get all employee");
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(allEmployee, HttpStatus.OK);
+//    }
+
 }
 

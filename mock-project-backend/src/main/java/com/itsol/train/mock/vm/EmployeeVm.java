@@ -1,14 +1,17 @@
 package com.itsol.train.mock.vm;
 
+import com.itsol.train.mock.dto.BaseDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.io.Serializable;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class EmployeeVm {
+public class EmployeeVm extends BaseDto implements Serializable {
     String username;
     String roleName;
     String departmentName;
@@ -18,4 +21,9 @@ public class EmployeeVm {
     String university;
     String address;
     Integer graduatedYear;
+    Integer roleId;
+
+    String myRoleName;
+    Integer myDepartmentId;
+
 }

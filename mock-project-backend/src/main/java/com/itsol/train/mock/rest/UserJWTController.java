@@ -1,11 +1,15 @@
 package com.itsol.train.mock.rest;
 
 import com.itsol.train.mock.dto.EmployeeDto;
+import com.itsol.train.mock.entity.EmployeeEntity;
 import com.itsol.train.mock.security.jwt.JWTFilter;
 import com.itsol.train.mock.security.jwt.TokenProvider;
 import com.itsol.train.mock.service.EmployeeService;
+import com.itsol.train.mock.vm.EmployeeVm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +34,7 @@ public class UserJWTController {
 
     private final TokenProvider tokenProvider;
 
+    @Autowired
     private EmployeeService employeeService;
 
     public UserJWTController(AuthenticationManagerBuilder authenticationManagerBuilder,

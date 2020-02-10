@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @ToString
 @EqualsAndHashCode
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeDto {
+public class EmployeeDto extends BaseDto implements Serializable {
 
     @NotNull
     String login;

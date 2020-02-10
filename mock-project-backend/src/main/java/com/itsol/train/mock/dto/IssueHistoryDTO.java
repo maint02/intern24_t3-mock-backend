@@ -15,5 +15,9 @@ public class IssueHistoryDTO {
     String issueChange;
     Long issueId;
     Long updatePersonId;
+    Long donePercentOld;
+    Long donePercentNew;
+    String statusOld;
+    String statusNew;
 }
 

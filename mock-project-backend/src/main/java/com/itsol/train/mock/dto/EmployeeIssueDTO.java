@@ -10,7 +10,7 @@ import lombok.*;
 public class EmployeeIssueDTO {
     private Long employeeId;
     private Long issueId;
-    private Long spentTime;
+    private Float spentTime;
     private String note;
     private Long statusId;
     private Long employeeAssignedId;

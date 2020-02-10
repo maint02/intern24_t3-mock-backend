@@ -127,15 +127,18 @@ commit;
 
 
 
---INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID) 
---VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Không tự động chuyển trang ',to_date('19/6/2019','dd/MM/yyyy'),'2.5', '80', 'Trung bình', 'Chưa tìm ra', 'Khi bấm vào số trang ở thanh chuyển trang thì không có hành động nào xảy ra', 'Bug', '2', '2');
---
---INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID) 
---VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Dịch sai từ tiếng Anh sang tiếng Việt ',to_date('16/10/2019','dd/MM/yyyy'),'0.5', '90', 'Dễ', 'Do chị Google lỗi', 'Issue được dịch thành "giấy ăn"', 'Bug', '1', '3');
---
---INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID) 
---VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Không nhận được thông báo khi đăng ký thành công tài khoản ',to_date('10/7/2019','dd/MM/yyyy'),'3.0', '80', 'Khó', 'Chưa tìm ra', 'Khi đăng ký thành công tài khoản phải có thông báo đến email đã đăng ký', 'Bug', '2', '3');
---commit;
+INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID,employee_reported_id) 
+VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Không tự động chuyển trang ',to_date('19/6/2019','dd/MM/yyyy'),'2.5', '80', 'Trung bình', 'Chưa tìm ra', 'Khi bấm vào số trang ở thanh chuyển trang thì không có hành động nào xảy ra', 'Bug', '2', '2','1');
+
+INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID, employee_reported_id) 
+VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Dịch sai từ tiếng Anh sang tiếng Việt ',to_date('16/10/2019','dd/MM/yyyy'),'0.5', '90', 'Dễ', 'Do chị Google lỗi', 'Issue được dịch thành "giấy ăn"', 'Bug', '1', '3','1');
+
+INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID,employee_reported_id ) 
+VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Không nhận được thông báo khi đăng ký thành công tài khoản ',to_date('10/7/2019','dd/MM/yyyy'),'3.0', '80', 'Khó', 'Chưa tìm ra', 'Khi đăng ký thành công tài khoản phải có thông báo đến email đã đăng ký', 'Bug', '2', '3','1');
+
+INSERT INTO "MOCKUP_SMARTOFFICE"."ISSUE" (ID, NAME, start_date, due_date, DONE_PERCENT, PRIORITY, REASON, DESCRIPTION, TYPE, PROJECT_ID, STATUS_ID,employee_reported_id ) 
+VALUES (AUTO_INCRE_SEQ_ISSUE.nextval, 'Lỗi khi nhấn vào nút tìm kiếm ',to_date('10/7/2019','dd/MM/yyyy'),'3.0', '80', 'Khó', 'Chưa tìm ra', 'không tìm được', 'Bug', '3', '1','1');
+commit;
 
 --insert into issue_history(id, update_date,comments, issue_change, task_id, update_person_id) 
 --values (AUTO_INCRE_SEQ_ISSUE_HIS.nextval, to_date('26/12/2019','dd/MM/yyyy'), null, 'done_percent:80-100; status:In Progress-Done; ')

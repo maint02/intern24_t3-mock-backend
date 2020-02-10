@@ -33,6 +33,9 @@ public class EmployeeIssueEntity implements Serializable {
     @Column(name = "spent_time", nullable = false)
     Float spentTime;
 
+    @Column(name = "employee_assigned_id")
+    Long employeeAssignId;
+
     @Column(name = "note")
     String note;
 

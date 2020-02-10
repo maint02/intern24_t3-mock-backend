@@ -135,7 +135,7 @@ ALTER TABLE employee_issue ADD CONSTRAINT employee_issue_issue_fk FOREIGN KEY (i
 ALTER TABLE issue ADD CONSTRAINT issue_project_fk FOREIGN KEY (project_id) REFERENCES project (id);
 ALTER TABLE issue_history ADD CONSTRAINT issue_history_issue_fk FOREIGN KEY (issue_id) REFERENCES issue (id);
 ALTER TABLE issue ADD CONSTRAINT issue_status_fk FOREIGN KEY (status_id) REFERENCES status (id);
-ALTER TABLE issue ADD CONSTRAINT issue_employee_fk FOREIGN KEY (person_created_id) REFERENCES employee (id);
+ALTER TABLE issue ADD CONSTRAINT issue_employee_fk FOREIGN KEY (employee_reported_id) REFERENCES employee (id);
 
 ALTER TABLE project ADD CONSTRAINT project_status_fk FOREIGN KEY (status_id) REFERENCES status (id);
 ALTER TABLE issue_history ADD CONSTRAINT issue_history_employee_fk FOREIGN KEY (update_person_id) REFERENCES employee (id);

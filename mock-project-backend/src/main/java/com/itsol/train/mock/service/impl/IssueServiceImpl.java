@@ -133,6 +133,8 @@ public class IssueServiceImpl implements IssueService {
                 issueEntityOld.setStatusEntity(entityManager.find(StatusEntity.class,updateIssueDTO.getStatusId()));
                 //lưu trạng thái mới cho DonePercent:
                 issueEntityOld.setDonePercent(updateIssueDTO.getDonePercent());
+                //tạo cái dto mới
+                IssueDTO issueDTO_New=modelMapper.map(issueEntityOld,IssueDTO.class);
                 //tạo lịch sử issue:
                 IssueHistoryEntity issueHistoryEntity=new IssueHistoryEntity();
                 issueHistoryEntity.setComments(updateIssueDTO.getComments());
@@ -140,8 +142,12 @@ public class IssueServiceImpl implements IssueService {
                 issueHistoryEntity.setEmployeeEntity(entityManager.find(EmployeeEntity.class,updateIssueDTO.getUpdatePersonId()));
                 issueHistoryEntity.setIssueEntity(issueEntityOld);
                 Gson gson=new Gson();
-                String history=gson.toJson(issueDTO_Old);
-                issueHistoryEntity.setIssueChange(history);
+                StringBuilder historyIssue=new StringBuilder();
+                historyIssue.append(gson.toJson(issueDTO_Old));
+                historyIssue.append("_to_");
+                String newIssue=gson.toJson(issueDTO_New);
+                historyIssue.append(newIssue);
+                issueHistoryEntity.setIssueChange(historyIssue.toString());
                 entityManager.persist(issueHistoryEntity);// lưu lịch sử
                 transaction.commit();
                 entityManager.close();

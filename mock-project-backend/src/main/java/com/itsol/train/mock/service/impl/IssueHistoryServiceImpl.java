@@ -34,7 +34,7 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
             dto.setComments(i.getComments());
             dto.setUpdatePersonId(i.getEmployeeEntity().getId());
             dto.setUpdateDate(i.getUpdateDate());
-
+            dto.setUpdatePersonName(i.getEmployeeEntity().getUsername());
             String historyIssue=i.getIssueChange();
 //             thư viện hỗ trợ convert:
             if(historyIssue.contains("_to_")==true){ //nếu chuỗi đúng format như đã thêm lúc đầu

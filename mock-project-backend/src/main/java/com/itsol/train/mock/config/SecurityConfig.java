@@ -58,6 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/project/**").permitAll()
                 .antMatchers("/api/issue/**").permitAll()
                 .antMatchers("/api/issue-history/**").permitAll()
+                .antMatchers("/api/employee-issue/**").permitAll()
+                .antMatchers("/api/team-project/**").permitAll()
                 .antMatchers("/api/timesheet/**").permitAll()
                 .antMatchers("/api/status/**").permitAll()
                 .antMatchers("/api/product/**").hasAnyRole(RoleEntitesConstants.EMPLOYEE, RoleEntitesConstants.ADMIN)

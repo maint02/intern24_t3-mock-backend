@@ -1,5 +1,6 @@
 package com.itsol.train.mock.service.impl;
 
+import com.itsol.train.mock.dao.EmployeeIssueDAO;
 import com.itsol.train.mock.dto.EmployeeIssueDTO;
 import com.itsol.train.mock.entity.*;
 import com.itsol.train.mock.repo.EmployeeIssueRepository;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class EmployeeIssueServiceImpl implements EmployeeIssueService {
@@ -20,6 +23,8 @@ public class EmployeeIssueServiceImpl implements EmployeeIssueService {
     ModelMapper modelMapper;
     @Autowired
     EntityManagerFactory entityManagerFactory;
+    @Autowired
+    EmployeeIssueDAO employeeIssueDAO;
     @Override
     public boolean save(EmployeeIssueDTO employeeIssueDTO) {
         EntityManager entityManager=entityManagerFactory.createEntityManager();
@@ -39,6 +44,7 @@ public class EmployeeIssueServiceImpl implements EmployeeIssueService {
             entity.setStatusEntity(statusEntity);
             entity.setEmpIssuePK(new EmpIssuePK(employeeIssueDTO.getEmployeeId(),employeeIssueDTO.getIssueId()));
             entity.setEmployeeAssignId(employeeIssueDTO.getEmployeeAssignedId());
+            entity.setCreatedDate(new Date());
             entityManager.persist(entity);
             transaction.commit();
             entityManager.close();
@@ -52,5 +58,15 @@ public class EmployeeIssueServiceImpl implements EmployeeIssueService {
         }finally {
             entityManager.close();
         }
+    }
+
+    @Override
+    public List<EmployeeIssueDTO> getByIssueId(Long id) {
+        return employeeIssueDAO.getByIssueId(id);
+    }
+
+    @Override
+    public List<EmployeeIssueDTO> getByEmployeeId(Long id) {
+        return employeeIssueDAO.getByEmployeeId(id);
     }
 }

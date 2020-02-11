@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "employee_issue")
@@ -19,11 +20,11 @@ public class EmployeeIssueEntity implements Serializable {
     EmpIssuePK empIssuePK;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("employeeId")
+    @MapsId("employee_id")
     EmployeeEntity employeeEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("issueId")
+    @MapsId("issue_id")
     IssueEntity issueEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,5 +40,7 @@ public class EmployeeIssueEntity implements Serializable {
     @Column(name = "note")
     String note;
 
+    @Column(name = "created_date")
+    Date createdDate;
 
 }

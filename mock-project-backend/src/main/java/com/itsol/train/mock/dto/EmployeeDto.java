@@ -60,6 +60,7 @@ public class EmployeeDto extends BaseDto implements Serializable {
 
     Boolean rememberMe;
     List<String> authorities;
+    Long totalRecord;
 
 //    Set<RoleEntity> roleEntities;
 //    DepartmentEntity departmentEntity;

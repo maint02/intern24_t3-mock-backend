@@ -2,10 +2,11 @@ package com.itsol.train.mock.repo;
 
 import com.itsol.train.mock.entity.EmployeeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-
+@Repository
 public interface EmployeeRepositoryJpa extends JpaRepository<EmployeeEntity, String> {
 
 //    String USERS_BY_LOGIN_CACHE = "getByUsername";
@@ -20,4 +21,6 @@ public interface EmployeeRepositoryJpa extends JpaRepository<EmployeeEntity, Str
     EmployeeEntity findByEmail(String email);
 
     EmployeeEntity findByUsername(String username);
+
+
 }

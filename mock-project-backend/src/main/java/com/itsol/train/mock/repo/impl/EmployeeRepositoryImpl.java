@@ -2,7 +2,10 @@ package com.itsol.train.mock.repo.impl;
 
 
 import com.itsol.train.mock.constants.RoleConstants;
+import com.itsol.train.mock.dto.BaseDto;
+import com.itsol.train.mock.dto.BaseSearchDTO;
 import com.itsol.train.mock.dto.EmployeeDto;
+import com.itsol.train.mock.dto.PagingDataDTO;
 import com.itsol.train.mock.entity.EmployeeEntity;
 import com.itsol.train.mock.repo.EmployeeRepository;
 import com.itsol.train.mock.utils.DataUtil;
@@ -138,9 +141,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     // get all & get all by params
     @Override
-    public Page<EmployeeDto> findListEmployeesByParams(EmployeeVm employeeVm) {
+    public BaseSearchDTO findListEmployeesByParams(EmployeeVm employeeVm) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         String sql = SQLBuilder.readSqlFromFile(SQLBuilder.SQL_MODULE_EMPLOYEE, "find-employee");
+        BaseSearchDTO baseSearchDTO = new BaseSearchDTO();
+        BaseDto baseDto = new BaseDto();
         try {
             session.beginTransaction();
             if (DataUtil.isNotNullAndEmptyString(employeeVm.getUsername())) {
@@ -160,7 +165,17 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                 sql += " and er.role_id < :p_employee_roleId\n" +
                         " and d.id = :p_employee_departmentId ";
             }
-            NativeQuery<EmployeeDto> sqlQuery = session.createSQLQuery(sql);
+
+            sql+= " order by username";
+
+            String mainSql = SQLBuilder.readSqlFromFile(SQLBuilder.SQL_MODULE_EMPLOYEE, "search_and_count_emp");
+            mainSql = mainSql.replaceAll("_sql_", sql);
+
+            NativeQuery<EmployeeDto> sqlQuery = session.createSQLQuery(mainSql);
+
+            sqlQuery.setParameter("p_page_number", employeeVm.getPage());
+            sqlQuery.setParameter("p_page_size", employeeVm.getPageSize());
+
             if (DataUtil.isNotNullAndEmptyString(employeeVm.getUsername())) {
                 sqlQuery.setParameter("p_employee_username", DataUtil.removeWildcardCharacters(employeeVm.getUsername()));
             }
@@ -196,19 +211,14 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
                     .addScalar("positionName", new StringType())
                     .addScalar("teamId", new LongType())
                     .addScalar("teamName", new StringType())
+                    .addScalar("totalRecord", new LongType())
                     .setResultTransformer(Transformers.aliasToBean(EmployeeDto.class));
-
-            if (employeeVm.getPage() != null && employeeVm.getPageSize() != null) {
-                Pageable pageable = PageBuilder.buildPageable(employeeVm);
-                if (pageable != null) {
-                    sqlQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
-                    sqlQuery.setMaxResults(pageable.getPageSize());
-                }
-                List<EmployeeDto> dtos = sqlQuery.list();
-                Page<EmployeeDto> dataPage = new PageImpl<>(dtos, pageable, total());
-                return dataPage;
-            }
-            session.getTransaction().commit();
+            List<EmployeeDto> resultList = sqlQuery.getResultList();
+            baseSearchDTO.setData(resultList);
+            baseSearchDTO.setPage(employeeVm.getPage());
+            baseSearchDTO.setPageSize(employeeVm.getPageSize());
+            baseSearchDTO.setTotalRecords(resultList != null && !resultList.isEmpty() ? resultList.get(0).getTotalRecord() : 0);
+            return baseSearchDTO;
         } catch (HibernateException e) {
             session.getTransaction().rollback();
             log.error(e.getMessage(), e);

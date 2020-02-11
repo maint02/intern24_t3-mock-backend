@@ -2,6 +2,7 @@ package com.itsol.train.mock.rest;
 
 
 import com.itsol.train.mock.constants.AppConstants;
+import com.itsol.train.mock.dto.BaseSearchDTO;
 import com.itsol.train.mock.dto.ResponseDto;
 import com.itsol.train.mock.dto.EmployeeDto;
 import com.itsol.train.mock.entity.EmployeeEntity;
@@ -84,30 +85,39 @@ public class EmployeeResource {
 //        return new ResponseEntity<>(employeeInfo, HttpStatus.OK);
 //    }
 
+    //    @GetMapping("/get/{username}")
+//    public ResponseEntity<EmployeeDto> getEmployeeByUsername(@PathVariable("username") String username) {
+//        EmployeeVm employeeVm = new EmployeeVm();
+//        employeeVm.setUsername(username);
+//        Page<EmployeeDto> emp = employeeService.getListByParams(employeeVm);
+//        Optional<EmployeeDto> first = emp.get().findFirst();
+//        return new ResponseEntity<>(first.isPresent() ? first.get() : null, HttpStatus.OK);
+//    }
     @GetMapping("/get/{username}")
     public ResponseEntity<EmployeeDto> getEmployeeByUsername(@PathVariable("username") String username) {
         EmployeeVm employeeVm = new EmployeeVm();
         employeeVm.setUsername(username);
-        Page<EmployeeDto> emp = employeeService.getListByParams(employeeVm);
-        Optional<EmployeeDto> first = emp.get().findFirst();
-        return new ResponseEntity<>(first.isPresent() ? first.get() : null, HttpStatus.OK);
+        BaseSearchDTO emp = employeeService.getListByParams(employeeVm);
+        EmployeeDto dto = (EmployeeDto) emp.getData().get(0);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-//    trả về danh sách nhân viên
+//        trả về danh sách nhân viên
 //    @GetMapping("/get/{roleName}")
-//    public ResponseEntity<EmployeeDto> getEmployeeByRoleName(@PathVariable("roleName") String roleName){
+//    public ResponseEntity<?> getEmployeeByRoleName(@PathVariable("roleName") String roleName) {
 //        EmployeeVm employeeVm = new EmployeeVm();
 //        employeeVm.setRoleName(roleName);
-//        Page<EmployeeDto> emp = employeeService.getListByParams(employeeVm);
-//        Stream<EmployeeDto> dtos = emp.get();
-//        return new ResponseEntity<>(dtos , HttpStatus.OK);
+//        BaseSearchDTO emp = employeeService.getListByParams(employeeVm);
+//        EmployeeDto dto = (EmployeeDto) emp.getData().get(0);
+//        return new ResponseEntity<>(dto, HttpStatus.OK);
 //    }
+
     // search bằng các điều kiện khác -> trả 1 list -> viết hàm search
     @PostMapping("/search")
-    public ResponseEntity<Page<EmployeeDto>> findListByParams(@RequestBody EmployeeVm employeeVm) {
-        Page<EmployeeDto> data = employeeService.getListByParams(employeeVm);
-        return new ResponseEntity<>(data, HttpStatus.OK);
+    public ResponseEntity<BaseSearchDTO> findListByParams(@RequestBody EmployeeVm employeeVm) {
+        return new ResponseEntity<>(employeeService.getListByParams(employeeVm), HttpStatus.OK);
     }
+
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('HR')")

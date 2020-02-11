@@ -1,5 +1,6 @@
 package com.itsol.train.mock.service.impl;
 
+import com.itsol.train.mock.dto.BaseSearchDTO;
 import com.itsol.train.mock.dto.EmployeeDto;
 import com.itsol.train.mock.entity.*;
 import com.itsol.train.mock.exception.EmailExistException;
@@ -14,12 +15,12 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.*;
 
 @Service
@@ -145,6 +146,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return result;
     }
 
+    @Override
+    public BaseSearchDTO getListByParams(EmployeeVm employeeVm) {
+        return employeeRepository.findListEmployeesByParams(employeeVm);
+    }
+
 //    @Override
 //    public boolean updateById(EmployeeDto employeeDto) {
 //        Long id = employeeDto.getId();
@@ -183,10 +189,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        return allDtos;
 //    }
 
-    @Override
-    public Page<EmployeeDto> getListByParams(EmployeeVm employeeVm) {
-        return employeeRepository.findListEmployeesByParams(employeeVm);
-    }
 }
 
 

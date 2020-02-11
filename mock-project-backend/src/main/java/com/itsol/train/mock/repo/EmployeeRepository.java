@@ -1,6 +1,8 @@
 package com.itsol.train.mock.repo;
 
+import com.itsol.train.mock.dto.BaseSearchDTO;
 import com.itsol.train.mock.dto.EmployeeDto;
+import com.itsol.train.mock.dto.PagingDataDTO;
 import com.itsol.train.mock.entity.EmployeeEntity;
 import com.itsol.train.mock.vm.EmployeeVm;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ public interface EmployeeRepository {
 
     boolean deleteEmployeeById(long id);
 
-    Page<EmployeeDto> findListEmployeesByParams(EmployeeVm employeeVm);
+    BaseSearchDTO findListEmployeesByParams(EmployeeVm employeeVm);
+
 
 }

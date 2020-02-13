@@ -39,4 +39,7 @@ public class IssueHistoryEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "update_person_id", nullable = false)
     EmployeeEntity employeeEntity;
+
+    @Column(name = "image_name", nullable = false)
+    String imageName;
 }

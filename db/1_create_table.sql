@@ -122,7 +122,8 @@ CREATE TABLE issue_history (
     comments            VARCHAR2(255),
     issue_change        VARCHAR2(4000),
     issue_id            NUMBER(10) NOT NULL,
-    update_person_id   NUMBER(10) 
+    update_person_id   NUMBER(10),
+	image_name 			VARCHAR2(255)
 );
 
 --ADD CONSTRAINT

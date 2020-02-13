@@ -20,5 +20,6 @@ public class IssueHistoryDTO {
     String statusOld;
     String statusNew;
     String updatePersonName;
+    String imageName;
 }
 

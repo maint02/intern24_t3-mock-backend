@@ -1,7 +1,7 @@
 package com.itsol.train.mock.service.impl;
 
 import com.itsol.train.mock.constants.AppConstants;
-import com.itsol.train.mock.service.UploadFileService;
+import com.itsol.train.mock.service.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class UploadFileServiceImpl  implements UploadFileService {
+public class FileServiceImpl implements FileService {
     @Override
     public boolean saveFileToSystem(MultipartFile file) {
         Path systemFolder= Paths.get(AppConstants.SYSTEM_FOLDER_IMAGES);
@@ -47,5 +47,17 @@ public class UploadFileServiceImpl  implements UploadFileService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean deleteFileInSystem(String fileName) {
+        Path systemFolder= Paths.get(AppConstants.SYSTEM_FOLDER_IMAGES);
+        try {
+            Files.delete(systemFolder.resolve(fileName));
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

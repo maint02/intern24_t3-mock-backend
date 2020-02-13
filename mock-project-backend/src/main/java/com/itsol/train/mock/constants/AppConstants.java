@@ -7,4 +7,6 @@ public class AppConstants {
     public static final int RESPONSE_APPROVED = 4;
     public static final int EXISTED_USERNAME = 5;
     public static final int EXISTED_EMAIL = 6;
+    public static final String SYSTEM_FOLDER_IMAGES="H:\\UploadHinhAnh";
+    public static final String SYSTEM_FOLDER_VIDEOS="H:\\UploadVideo";
 }

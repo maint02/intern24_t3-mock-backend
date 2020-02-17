@@ -6,8 +6,10 @@ import com.itsol.train.mock.dto.IssueHistoryDTO;
 import com.itsol.train.mock.entity.IssueEntity;
 import com.itsol.train.mock.entity.IssueHistoryEntity;
 import com.itsol.train.mock.repo.IssueHistoryRepository;
+import com.itsol.train.mock.service.FileService;
 import com.itsol.train.mock.service.IssueHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -21,6 +23,8 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
     IssueHistoryRepository issueHistoryRepository;
     @Autowired
     EntityManagerFactory entityManagerFactory;
+    @Autowired
+    FileService  fileService;
     @Override
     public List<IssueHistoryDTO> getAllByIssueId(Long id) {
         EntityManager entityManager=entityManagerFactory.createEntityManager();
@@ -35,6 +39,7 @@ public class IssueHistoryServiceImpl implements IssueHistoryService {
             dto.setUpdatePersonId(i.getEmployeeEntity().getId());
             dto.setUpdateDate(i.getUpdateDate());
             dto.setUpdatePersonName(i.getEmployeeEntity().getUsername());
+            dto.setImageName(i.getImageName());
             String historyIssue=i.getIssueChange();
 //             thư viện hỗ trợ convert:
             if(historyIssue.contains("_to_")==true){ //nếu chuỗi đúng format như đã thêm lúc đầu

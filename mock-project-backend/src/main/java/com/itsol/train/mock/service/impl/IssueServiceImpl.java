@@ -141,6 +141,7 @@ public class IssueServiceImpl implements IssueService {
                 issueHistoryEntity.setUpdateDate(new Date());
                 issueHistoryEntity.setEmployeeEntity(entityManager.find(EmployeeEntity.class,updateIssueDTO.getUpdatePersonId()));
                 issueHistoryEntity.setIssueEntity(issueEntityOld);
+                issueHistoryEntity.setImageName(updateIssueDTO.getImageName());
                 Gson gson=new Gson();
                 StringBuilder historyIssue=new StringBuilder();
                 historyIssue.append(gson.toJson(issueDTO_Old));

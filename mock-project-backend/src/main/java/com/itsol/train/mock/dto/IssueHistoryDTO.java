@@ -1,5 +1,6 @@
 package com.itsol.train.mock.dto;
 import lombok.*;
+import org.springframework.core.io.Resource;
 
 import java.util.Date;
 @Getter

@@ -13,4 +13,5 @@ public class UpdateIssueDTO {
     private Long statusId;
     private String comments;
     private Long updatePersonId;
+    private String imageName;
 }

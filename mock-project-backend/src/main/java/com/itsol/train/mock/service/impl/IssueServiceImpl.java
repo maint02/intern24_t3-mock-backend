@@ -1,6 +1,8 @@
 package com.itsol.train.mock.service.impl;
 
 import com.google.gson.Gson;
+import com.itsol.train.mock.constants.AppConstants;
+import com.itsol.train.mock.constants.IssuesExelUploadConstants;
 import com.itsol.train.mock.constants.UpdateIssueConstants;
 import com.itsol.train.mock.dao.IssueDAO;
 import com.itsol.train.mock.dto.*;
@@ -10,17 +12,27 @@ import com.itsol.train.mock.repo.IssueRepository;
 import com.itsol.train.mock.repo.ProjectRepository;
 import com.itsol.train.mock.repo.StatusRepository;
 import com.itsol.train.mock.service.IssueService;
+import com.itsol.train.mock.utils.ExelUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -169,6 +181,94 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public PagingDataDTO getByParams(PagingDataDTO pagingDataDTO, IssueSearchDTO issueSearchDTO) {
         return issueDAO.getByParams(pagingDataDTO,issueSearchDTO);
+    }
+
+    @Override
+    public Integer saveAllFromExel(MultipartFile file) {
+        List<IssueDTO> issueDTOS = new ArrayList<>();
+        ExelUtil exelUtil = new ExelUtil();
+        try {
+            Workbook workbook = exelUtil.getWorkbook(file);
+            Sheet sheet = exelUtil.getSheetExel(workbook, 0);
+            Iterator<Row> iterator = sheet.iterator(); //tạo một iterator cho dòng
+            while (iterator.hasNext()) { //DUYỆT DÒNG nếu có dòng tiếp theo bắt đầu từ dòng số 0
+                Row thisRow = iterator.next();
+                if (thisRow.getRowNum() == 0 || thisRow.getRowNum() == 1) { //nếu là dòng thứ nhất hoặc thứ 2
+                    if (thisRow.getRowNum() == 1){
+                        String cell_1=thisRow.getCell(1).getStringCellValue();
+                        if (!cell_1.equals("projectId")){ // nếu ko đúng mẫu exel thì return lỗi
+                            return IssuesExelUploadConstants.TEMPLATE_EXEL_ERRO;
+                        }
+                    }
+                    // Ignore header & title
+                    continue;
+                }
+                IssueDTO issueDTO = new IssueDTO();// bắt đầu từ dòng thứ 2 trong file exel
+                // Get all cells
+                Iterator<Cell> cellIterator = thisRow.cellIterator();
+                while (cellIterator.hasNext()) { //DUYỆT CELL TRONG DÒNG
+                    //Read cell
+                    Cell cell = cellIterator.next();
+                    Object cellValue = exelUtil.getCellValue(cell);
+                    if (cellValue == null || cellValue.toString().isEmpty()) { // nếu cell null hoặc empty chạy cell kế tiếp
+                        continue;
+                    }
+                    // Set value for book object
+                    System.out.println(cell.getCellType());
+                    int columnIndex = cell.getColumnIndex();
+                    switch (columnIndex) {
+                        case 1:
+                            issueDTO.setProjectId(Double.valueOf((Double) cellValue).longValue());
+                            break;
+                        case 2:
+                            issueDTO.setName((String) cellValue);
+                            break;
+                        case 3:
+                            issueDTO.setDueDate(Double.valueOf((Double) cellValue).longValue());
+                            break;
+                        case 4:
+                            issueDTO.setStartDate(new Date(cell.toString()));
+                            break;
+                        case 5:
+                            issueDTO.setDonePercent(Double.valueOf((Double) cellValue).longValue());
+                            break;
+                        case 6:
+                            issueDTO.setPriority((String) cellValue);
+                            break;
+                        case 7:
+                            issueDTO.setReason((String) cellValue);
+                            break;
+                        case 8:
+                            issueDTO.setDescription((String) cellValue);
+                            break;
+                        case 9:
+                            issueDTO.setType((String) cellValue);
+                            break;
+                        case 10:
+                            issueDTO.setStatusId(Double.valueOf((Double) cellValue).longValue());
+                            break;
+                    }
+
+                }
+                issueDTO.setEmployeeReportedId(1l);
+                issueDTOS.add(issueDTO);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return IssuesExelUploadConstants.UPLOAD_ERRO;
+        }
+        System.out.println(issueDTOS); // lấy ra được list dto từ file exel map sang java dto
+        for (IssueDTO i : issueDTOS) {
+            this.save(i);
+        }
+        return IssuesExelUploadConstants.UPLOAD_OK;
+    }
+
+    @Override
+    public Resource exportFileExelfromList(List<IssueDTO> dtos) {
+
+        return null;
     }
 
 

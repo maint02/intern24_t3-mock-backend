@@ -5,6 +5,7 @@ import com.itsol.train.mock.dto.ResponseDto;
 import com.itsol.train.mock.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,17 @@ public class FileResource {
            return ResponseEntity.ok(resourceOutput);
        }
        return ResponseEntity.ok(null);
+    }
+    @GetMapping("/dowload/{nameFile:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> dowloadFile(@PathVariable("nameFile") String nameFile){
+        Resource resourceOutput=fileService.getSingleFile(nameFile);
+        if (resourceOutput!=null){
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" +nameFile)
+                    .body(resourceOutput);
+        }
+        return ResponseEntity.ok(null);
     }
     @DeleteMapping("/delete/{nameFile}")
     public ResponseEntity<ResponseDto> deleteFileByName(@PathVariable("nameFile") String nameFile){
